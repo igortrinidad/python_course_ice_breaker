@@ -5,11 +5,6 @@ from dotenv import load_dotenv
 from util.save_json import save_json
 from util.hash_string import hash_string
 
-dotenv_path = './.env'
-load_dotenv(dotenv_path)
-
-print(os.environ.get('PROXY_CURL_API_KEY'))
-
 def scrape_linkeding_profile(linkedin_profile_url: str):
 
   api_endpoint = "https://nubela.co/proxycurl/api/v2/linkedin"

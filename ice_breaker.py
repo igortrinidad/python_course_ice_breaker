@@ -1,12 +1,35 @@
 import os
 from dotenv import load_dotenv
 from util.linkedin import get_linkedin_profile_data
+from langchain.prompts import PromptTemplate
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
 
-dotenv_path = './.env'
-load_dotenv(dotenv_path)
+from agents.linkedin_lookup_agent import lookup as linkedin_lookup_agent
 
-if __name__ == '__main__':
+# dotenv_path = './.env'
+# load_dotenv(dotenv_path)
 
-  linkedin_data = get_linkedin_profile_data(linkedin_profile_url='https://www.linkedin.com/in/igortrindadedev')
+if __name__ == "__main__":
+    
+    print("Hello LangChain!")
 
-  print(linkedin_data)
+    linkedin_profile_url = linkedin_lookup_agent(name="Eden Marco Udemy")
+
+    summary_template = """
+      given the Linkedin information {information} about a person from I want you to create:
+      1. a short summary
+      2. two interesting facts about them
+     """
+
+    summary_prompt_template = PromptTemplate(
+      input_variables=["information"], template=summary_template
+    )
+
+    llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo")
+
+    chain = LLMChain(llm=llm, prompt=summary_prompt_template)
+
+    linkedin_data = get_linkedin_profile_data(linkedin_profile_url=linkedin_profile_url)
+
+    print(chain.run(information=linkedin_data))
